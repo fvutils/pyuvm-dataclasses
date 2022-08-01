@@ -1,0 +1,18 @@
+
+package:
+  name: pyuvm-dataclasses
+  version: 0.0.1
+
+  dep-sets:
+  - name: default-dev
+    deps:
+    - name: pyuvm
+      url: https://github.com/pyuvm/pyuvm.git
+    - name: cocotb
+      url: https://github.com/cocotb/cocotb.git
+    - name: pyvsc
+      url: https://github.com/fvutils/pyvsc.git
+      branch: vsc2
+    - name: libvsc
+      url: https://github.com/fvutils/libvsc.git
+
