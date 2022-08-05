@@ -14,6 +14,7 @@ class DecoratorAgentImpl(object):
 
         self._validate_ports(T)
         self._validate_transaction(T)
+        self._validate_vlnv(T)
         pass
 
     def _validate_ports(self, T):
@@ -33,6 +34,11 @@ class DecoratorAgentImpl(object):
         pass
 
     def _validate_transaction(self, T):
-        if not hasattr(T, "transaction"):
+        if not hasattr(T, "transaction_t"):
             raise Exception("Agent class %s does not declare a 'transaction' class" % (
+                type(T).__qualname__,))
+
+    def _validate_vlnv(self, T):
+        if not hasattr(T, "vlnv"):
+            raise Exception("Agent class %s does not declare a 'vlnv' field" % (
                 type(T).__qualname__,))

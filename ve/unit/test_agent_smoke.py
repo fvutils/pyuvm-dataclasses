@@ -5,10 +5,10 @@ Created on Jul 4, 2022
 '''
 import pyuvm as uvm
 import uvm_dataclasses as udc
-import vsc
+#import vsc
 from unittest.case import TestCase
+import cocotb_stub_sim as cocotb
 
-from uvm_dataclasses.impl.agent_t_meta import AgentTMeta
 from uvm_dataclasses.types import param_base
 
 class TestAgentSmoke(TestCase):
@@ -31,8 +31,19 @@ class TestAgentSmoke(TestCase):
 
     def test_param_agent(self):
 
+        class my_agent_transaction(object):
+            pass
+
         @udc.agent
         class my_agent(param_base[dict(ADDR_WIDTH=10, DATA_WIDTH=20)]):
+            analysis_ap1 : udc.analysis_port['transaction']
+            analysis_ap2 : udc.analysis_port['transaction']
+
+            # This is needed to drive creation of the .core file
+            vlnv = "tblink_bfms::apb::initiator"
+
+            class config_t(udc.agent_config_t):
+                pass
 
             ports = (
                 udc.input("clk", is_clock=True),
@@ -43,13 +54,11 @@ class TestAgentSmoke(TestCase):
                 udc.input("ready")
             )
 
-            class transaction(object):
-                pass
+            transaction_t = my_agent_transaction
+#            class transaction(object):
+#                pass
 
-            analysis_ap1 : udc.analysis_port[transaction]
-            analysis_ap2 : udc.analysis_port[transaction]
-
-            class config(object):
+            class config_t(object):
                 pass
 
             # Internal method: called to provide this level
@@ -66,7 +75,29 @@ class TestAgentSmoke(TestCase):
 
         class my_env(object):
 #            a1 : my_agent[20, 30]
+
+            def configure(self):
+                pass
+
             pass
+
+        @udc.bench
+        class my_bench(object):
+            top_env = my_env
+            vlnv = "::my_bench"
+
+            # Need three-part config
+            # - Incoming configuration as selected by constraints
+            # - Configuration overrides at this level
+            # - Configuration overrides from above
+            # -> Final configuration
+
+            # Called to propagate configuration data
+            # down the tree and configure active/passive
+            def configure(self):
+                pass
+
+
         pass
 
     def test_ap(self):

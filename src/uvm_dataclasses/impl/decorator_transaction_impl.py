@@ -4,7 +4,7 @@ Created on Jul 4, 2022
 @author: mballance
 '''
 
-import vsc2
+#import vsc2
 
 class DecoratorTransactionImpl(object):
     

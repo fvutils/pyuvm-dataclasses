@@ -1,5 +1,5 @@
 
-from uvm_dataclasses.impl.agent_t_meta import AgentTMeta
+from uvm_dataclasses.impl.agent_t_decl_meta import AgentTDeclMeta
 from uvm_dataclasses.impl.analysis_export_meta_t import AnalysisExportMetaT
 from uvm_dataclasses.impl.analysis_port_meta_t import AnalysisPortMetaT
 from uvm_dataclasses.impl.analysis_port_t import AnalysisPortT
@@ -15,7 +15,10 @@ class analysis_imp(metaclass=AnalysisImpMetaT):
 class analysis_export(metaclass=AnalysisExportMetaT):
     pass
 
-class param_base(metaclass=AgentTMeta):
+class param_base(metaclass=AgentTDeclMeta):
+    pass
+
+class agent_t(metaclass=AgentTDeclMeta):
     pass
 
 class ports(object):

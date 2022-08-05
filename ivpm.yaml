@@ -10,9 +10,11 @@ package:
       url: https://github.com/pyuvm/pyuvm.git
     - name: cocotb
       url: https://github.com/cocotb/cocotb.git
-    - name: pyvsc
-      url: https://github.com/fvutils/pyvsc.git
-      branch: vsc2
-    - name: libvsc
-      url: https://github.com/fvutils/libvsc.git
+    - name: cocotb-stub-sim
+      url: https://github.com/fvutils/cocotb-stub-sim.git
+      #    - name: pyvsc
+      #url: https://github.com/fvutils/pyvsc.git
+      #branch: vsc2
+      #    - name: libvsc
+      #url: https://github.com/fvutils/libvsc.git
 
