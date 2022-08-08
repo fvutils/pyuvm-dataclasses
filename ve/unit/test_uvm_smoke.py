@@ -1,7 +1,7 @@
 
 import cocotb_stub_sim
 from pyuvm import *
-from ve.unit.udc_tests_base import UdcTestsBase
+from udc_tests_base import UdcTestsBase
 
 
 class TestUvmSmoke(UdcTestsBase):
