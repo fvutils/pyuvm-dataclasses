@@ -17,6 +17,9 @@ class DecoratorComponentImpl(DecoratorObjectImpl):
         super().__init__(args, kwargs)
         
     def pre_decorate(self, T):
+#        if hasattr(T, "__init__") and T.__init__.__code__.co_argcount == 3:
+#            raise Exception("Class declares __init__")
+        
         comp_ti = TypeInfoComponent.get(self.get_typeinfo())
         
         # Work back through the type hierarchy to find the
@@ -24,8 +27,6 @@ class DecoratorComponentImpl(DecoratorObjectImpl):
         comp_ti._uvm_comp_init = self._find_uvm_component_init(T)
     
     def init_annotated_field(self, key, type, has_init):
-        print("init_annotated_field: %s" % key)
-
         if not has_init:        
             if issubclass(type, uvm_component):
                 comp_ti = TypeInfoComponent.get(self.get_typeinfo())
@@ -37,18 +38,22 @@ class DecoratorComponentImpl(DecoratorObjectImpl):
             super().init_annotated_field(key, type, has_init)
 
     def post_decorate(self, T, Tp):
-        print("DecoratorComponentImpl.post_decorate")
         comp_ti = TypeInfoComponent.get(self.get_typeinfo())
 
         comp_ti._dataclass_init = Tp.__init__
+
+        print("Tp.__init__=%s" % str(Tp.__init__))        
+#        if Tp.__init__.__code__.co_argcount == 3:
+#            raise Exception("Something went wrong ; dataclass.__init__ shouldn't have three params")
         Tp.__init__ = MethodImplComponent.init
         
         Tp.build_phase = MethodImplComponent.build_phase
-    
-    pass
 
     def _find_uvm_component_init(self, c):
-        print("_find_uvm_component_init %s" % str(c))
+        """
+        Searches base classes for an __init__ matching the signature
+        required for class uvm_component
+        """
         if hasattr(c, "__init__") and c.__init__.__code__.co_argcount == 3:
             print(" -- match")
             return c.__init__

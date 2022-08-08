@@ -34,9 +34,9 @@ def agent(*args, **kwargs):
     
 def bench(*args, **kwargs):
     if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
-        return DecoratorBenchImpl({})(args[0])
+        return DecoratorBenchImpl([], {})(args[0])
     else:
-        return DecoratorBenchImpl(kwargs)
+        return DecoratorBenchImpl(args, kwargs)
 
 #def config(*args, **kwargs):
 #    if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
@@ -52,9 +52,9 @@ def bench(*args, **kwargs):
 
 def environment(*args, **kwargs):
     if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
-        return DecoratorEnvironmentImpl({})(args[0])
+        return DecoratorEnvironmentImpl([], {})(args[0])
     else:
-        return DecoratorEnvironmentImpl(kwargs)
+        return DecoratorEnvironmentImpl(args, kwargs)
     
 #def transaction(*args, **kwargs):
 #    if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
