@@ -42,7 +42,6 @@ class DecoratorComponentImpl(DecoratorObjectImpl):
 
         comp_ti._dataclass_init = Tp.__init__
 
-        print("Tp.__init__=%s" % str(Tp.__init__))        
 #        if Tp.__init__.__code__.co_argcount == 3:
 #            raise Exception("Something went wrong ; dataclass.__init__ shouldn't have three params")
         Tp.__init__ = MethodImplComponent.init

@@ -38,11 +38,11 @@ def bench(*args, **kwargs):
     else:
         return DecoratorBenchImpl(args, kwargs)
 
-#def config(*args, **kwargs):
-#    if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
-#        return DecoratorConfigImpl({})(args[0])
-#    else:
-#        return DecoratorConfigImpl(kwargs)
+def config(*args, **kwargs):
+    if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
+        return DecoratorConfigImpl([], {})(args[0])
+    else:
+        return DecoratorConfigImpl(args, kwargs)
 
 #def knobs(*args, **kwargs):
 #    if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):

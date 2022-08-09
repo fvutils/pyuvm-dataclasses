@@ -4,10 +4,9 @@ Created on Jul 4, 2022
 @author: mballance
 '''
 
-class DecoratorConfigImpl(object):
+import typeworks
+
+class DecoratorConfigImpl(typeworks.RegistrationDecoratorBase):
     
-    def __init__(self, kwargs):
-        pass
-    
-    def __call__(self, T):
-        pass
+    def __init__(self, args, kwargs):
+        super().__init__(DecoratorConfigImpl, args, kwargs)

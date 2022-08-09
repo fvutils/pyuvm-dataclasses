@@ -11,17 +11,13 @@ class TestEnvSmoke(UdcTestsBase):
         @udc.environment
         class my_env(uvm_component):
 
-            # Danger: cannot implement __init__            
-#            def __init__(self, name, parent):
-#                super().__init__(name, self)
-            
-            def __post_init__(self):
-                print("my_env.post_init")
-
-            @udc.object
-            class config_t(uvm_object):
+            @udc.config
+            class config(uvm_object):
                 a : int = 0
                 b : int = 1
+                
+                def __post_init__(self):
+                    print("my_env.config.post_init")
                 
         @udc.environment
         class my_super_env(uvm_component):
@@ -29,26 +25,34 @@ class TestEnvSmoke(UdcTestsBase):
             e2 : my_env
             
             def __post_build_phase__(self):
-                print("my_super_env.post_init e1=%s" % (str(self.e1,)))
+                print("my_super_env.post_init e1=%s" % (str(self.e1),))
 
-            @udc.object
-            class config_t(uvm_object):
+            @udc.config
+            class config(uvm_object):
                 c : int = 2
                 d : int = 3
+                
+        # Total config looks like this:
+        #
+        # config
+        #   c : int = 2
+        #   d : int = 3
+        #   e1_config : my_env
+        #     a : int = 0
+        #     b : int = 1
+        #   e2_config : my_env
+        #     a : int = 0
+        #     b : int = 1
 
         @udc.bench
         class my_test(uvm_test):
             top_env : my_super_env
-
-#             def build_phase(self):
-#                 print("outer::build_phase")
-# #                self.env = my_super_env("env", self)
-#                 print("--> create env", flush=True)
-#                 self.env = my_super_env("env", self)
-#                 print("<-- create env", flush=True)
-#                 print("--> call super env", flush=True)
-#                 uvm_component.__init__(self.env, "env", self)
-#                 print("<-- call super env", flush=True)
+            
+            # TODO: clock/reset information
+            # TODO: knob info -- don't initially need direct support
+            # TODO: propagate active/passive info
+            # TODO: user-specified vlnv (?)
+            # TODO: additional user-specified vlnvs (?)
 
         async def entry(dut):
             print("entry")

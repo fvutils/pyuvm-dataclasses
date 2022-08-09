@@ -22,3 +22,14 @@ class DecoratorObjectImpl(typeworks.ClsDecoratorBase):
                 super().init_annotated_field(key, type, has_init)
         else:
             super().init_annotated_field(key, type, has_init)
+
+#     def post_decorate(self, T, Tp):
+#         comp_ti = TypeInfoComponent.get(self.get_typeinfo())
+
+#         comp_ti._dataclass_init = Tp.__init__
+
+# #        if Tp.__init__.__code__.co_argcount == 3:
+# #            raise Exception("Something went wrong ; dataclass.__init__ shouldn't have three params")
+#         Tp.__init__ = MethodImplComponent.init
+        
+#         Tp.build_phase = MethodImplComponent.build_phase
