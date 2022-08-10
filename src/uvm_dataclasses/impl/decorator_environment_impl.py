@@ -49,8 +49,10 @@ class DecoratorEnvironmentImpl(DecoratorComponentImpl):
                 self.set_field_initial(key, None)
                 if uc_kind == UtilKind.Env:
                     env_ti._subenvs.append((key, type_uc_ti))
+                    env_ti._uvm_component_fields.append((key, type_uc_ti.T))
                 elif uc_kind == UtilKind.Agent:
                     env_ti._agents.append((key, type_uc_ti))
+                    env_ti._uvm_component_fields.append((key, type_uc_ti.T))
                 pass
             else:
                 return super().init_annotated_field(key, type, has_init)
@@ -69,12 +71,12 @@ class DecoratorEnvironmentImpl(DecoratorComponentImpl):
         elif len(config_t) > 1:
             raise Exception("Multiple @config classes declared in environment %s" % self.T.__name__)
 
-        env_ti.config_t = config_t[0]
+        env_ti._config_t = config_t[0]
 
         # Add type hints for the config objects        
         for name,senv_ti in env_ti._subenvs:
-            print("Name: %s ; Config: %s" % (name, str(senv_ti.config_t)))
-            env_ti.decl_config_field("%s_config" % name, senv_ti.config_t)
+            print("Name: %s ; Config: %s" % (name, str(senv_ti._config_t)))
+            env_ti.decl_config_field("%s_config" % name, senv_ti._config_t)
         
         for name,agnt_ti in env_ti._agents:
             print("Name: %s ; Config: %s" % (name, str(agnt_ti.config_t)))
@@ -82,15 +84,9 @@ class DecoratorEnvironmentImpl(DecoratorComponentImpl):
         # TODO: Retrieve the config class
         # TODO: Add entries for each sub-field
         # TODO: Run the object decorator on the field
-        config_tp = DecoratorObjectImpl([],{})(env_ti.config_t)
+        config_tp = DecoratorObjectImpl([],{})(env_ti._config_t)
         print("config_tp: %s" % str(config_tp))
-        env_ti.config_t = config_tp
+        env_ti._config_t = config_tp
             
         return super().post_init_annotated_fields()
     
-    def post_decorate(self, T, Tp):
-        super().post_decorate(T, Tp)
-        
-        # Hook init for ourselves
-        Tp.__init__ = MethodImplEnvironment.init
-        

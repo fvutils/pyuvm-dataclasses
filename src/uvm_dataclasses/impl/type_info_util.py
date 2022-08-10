@@ -13,12 +13,12 @@ class TypeInfoUtil(TypeInfoComponent):
     def __init__(self, info, kind):
         super().__init__(info)
         self.kind = kind
-        self.config_t = None
+        self._config_t = None
         
     def decl_config_field(self, key, type):
-        if not hasattr(self.config_t, "__annotations__"):
-            setattr(self.config_t, "__annotations__", dict())
-        self.config_t.__annotations__[key] = type
+        if not hasattr(self._config_t, "__annotations__"):
+            setattr(self._config_t, "__annotations__", dict())
+        self._config_t.__annotations__[key] = type
     
     @staticmethod
     def getUtilKind(info):

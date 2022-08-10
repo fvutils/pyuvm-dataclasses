@@ -10,6 +10,7 @@ class TestEnvSmoke(UdcTestsBase):
 
         @udc.environment
         class my_env(uvm_component):
+            my_impl : udc.analysis_imp[object]
 
             @udc.config
             class config(uvm_object):
@@ -18,6 +19,15 @@ class TestEnvSmoke(UdcTestsBase):
                 
                 def __post_init__(self):
                     print("my_env.config.post_init")
+
+            def __pre_build_phase__(self):
+                print("pre_build_phase")
+                
+            def __post_build_phase__(self):
+                print("post_build_phase")
+                    
+            def connect_phase(self):
+                self.my_impl.write(None)
                 
         @udc.environment
         class my_super_env(uvm_component):
@@ -53,6 +63,27 @@ class TestEnvSmoke(UdcTestsBase):
             # TODO: propagate active/passive info
             # TODO: user-specified vlnv (?)
             # TODO: additional user-specified vlnvs (?)
+
+            # - Create configuration
+            # - Complete initialization of configuration
+            # - Complete build of environment and link configuration            
+            #
+            #
+            # - Bench build_phase creates top-level configuration
+            # - Creates top-level environment
+            # - Calls 'set_config' on top-level environment
+            # - Invokes user hook to perform top-level config propagation (eg knob -> top-env)
+            # - Invokes config.initialize() to push perform config propagation
+            # - Bench build_phase complete
+            # -> UVM invokes sub-environment builds
+            #    - top-env build_phase has its configuration 
+            #    - constructs sub-envs
+            #    - calls sub-env set_config with appropriate config sub-handle
+            # <- UVM completes sub-environment builds
+            # 
+            
+            def connect_phase(self):
+                print("connect_phase: %s" % str(self))
 
         async def entry(dut):
             print("entry")

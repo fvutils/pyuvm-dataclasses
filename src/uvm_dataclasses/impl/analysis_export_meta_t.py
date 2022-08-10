@@ -10,7 +10,7 @@ class AnalysisExportMetaT(type):
         if item in self.type_m.keys():
             return self.type_m[item]
         else:
-            ret = AnalysisPortT()
+            ret = type("analysis_export[%s]" % str(item), (AnalysisPortT,), {})
             ret.T = item
             ret.Kind = AnalysisPortKind.Export
             self.type_m[item] = ret

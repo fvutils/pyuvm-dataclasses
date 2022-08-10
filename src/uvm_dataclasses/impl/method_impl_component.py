@@ -27,8 +27,4 @@ class MethodImplComponent(object):
         comp_ti : TypeInfoComponent = TypeInfoComponent.get(type(self)._typeinfo)
         comp_ti.build_phase(self)
 
-        # Call the user hook        
-        if hasattr(self, "__post_build_phase__"):
-            self.__post_build_phase__()
-        pass
 

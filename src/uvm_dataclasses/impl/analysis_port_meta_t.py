@@ -11,7 +11,7 @@ class AnalysisPortMetaT(type):
         if item in self.type_m.keys():
             return self.type_m[item]
         else:
-            ret = AnalysisPortT()
+            ret = type("analysis_port[%s]" % str(item), (AnalysisPortT,), {})
             ret.T = item
             ret.Kind = AnalysisPortKind.Port
             self.type_m[item] = ret
