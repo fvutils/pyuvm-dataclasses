@@ -22,26 +22,27 @@ class DecoratorBenchImpl(DecoratorComponentImpl):
         # Add a placeholder for the configuration
         self.add_field_decl("configuration", None, True, None)
         
-        if len(bench_ti._uvm_component_fields) == 0:
+        if len(bench_ti._udc_component_fields) == 0:
             raise Exception("No environment class specified")
-        elif len(bench_ti._uvm_component_fields) > 1:
+        elif len(bench_ti._udc_component_fields) > 1:
             raise Exception("Expect a single environment class ; %d specified" % (
-                len(bench_ti._uvm_component_fields),))
+                len(bench_ti._udc_component_fields),))
 
-        top_env_ti = typeworks.TypeInfo.get(bench_ti._uvm_component_fields[0][1])
-        uc_type = TypeInfoUtil.getUtilKind(top_env_ti)
+        top_env_ti = bench_ti._udc_component_fields[0][1]
         
-        if uc_type is None:
+        if not isinstance(top_env_ti, TypeInfoUtil):
             raise Exception("Top component %s is not a UVM Dataclasses Environment" % (
-                str(bench_ti._uvm_component_fields[0][0]),))
-        elif uc_type != UtilKind.Env:
+                str(bench_ti._udc_component_fields[0][0]),))
+        elif top_env_ti.kind != UtilKind.Env:
             raise Exception("Top component %s is a %s, not a UVM Dataclasses Environment" % (
-                str(bench_ti._uvm_component_fields[0][0]),
-                uc_type))
+                str(bench_ti._udc_component_fields[0][0]),
+                top_env_ti.kind))
         
-        bench_ti._top_env_ti = TypeInfoEnvironment.get(top_env_ti)
+        bench_ti._top_env_ti = top_env_ti
+        bench_ti._top_env_name = bench_ti._udc_component_fields[0][0]
+        print("Bench top_env_ti: %s ; config_t: %s" % (
+            str(bench_ti._top_env_ti), str(bench_ti._top_env_ti._config_t)))
         
-        print("uc_type=%s" % uc_type)
         super().post_init_annotated_fields()
     
     pass

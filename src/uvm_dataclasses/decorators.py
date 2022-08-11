@@ -4,7 +4,6 @@ Created on Jul 4, 2022
 @author: mballance
 '''
 from uvm_dataclasses.impl.decorator_agent_impl import DecoratorAgentImpl
-from uvm_dataclasses.impl.decorator_bench_impl import DecoratorBenchImpl
 from uvm_dataclasses.impl.decorator_component_impl import DecoratorComponentImpl
 from uvm_dataclasses.impl.decorator_config_impl import DecoratorConfigImpl
 from uvm_dataclasses.impl.decorator_knobs_impl import DecoratorKnobsImpl
@@ -25,6 +24,18 @@ def object(*args, **kwargs):
         return DecoratorObjectImpl([], {})(args[0])
     else:
         return DecoratorObjectImpl(args, kwargs)
+    
+def sequence_item(*args, **kwargs):
+    if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
+        return DecoratorObjectImpl([], {})(args[0])
+    else:
+        return DecoratorObjectImpl(args, kwargs)
+    
+def transaction(*args, **kwargs):
+    if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
+        return DecoratorObjectImpl([], {})(args[0])
+    else:
+        return DecoratorObjectImpl(args, kwargs)
 
 def agent(*args, **kwargs):
     if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
@@ -33,6 +44,7 @@ def agent(*args, **kwargs):
         return DecoratorAgentImpl(kwargs)
     
 def bench(*args, **kwargs):
+    from uvm_dataclasses.impl.decorator_bench_impl import DecoratorBenchImpl
     if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
         return DecoratorBenchImpl([], {})(args[0])
     else:

@@ -10,9 +10,11 @@ import typeworks
 
 from typeworks.impl.typeinfo import TypeInfo
 from uvm_dataclasses.impl.decorator_object_impl import DecoratorObjectImpl
+from uvm_dataclasses.impl.method_impl_config import MethodImplConfig
 from uvm_dataclasses.impl.method_impl_environment import MethodImplEnvironment
 
 from uvm_dataclasses.impl.type_info_component import TypeInfoComponent
+from uvm_dataclasses.impl.type_info_config import TypeInfoConfig
 from uvm_dataclasses.impl.type_info_environment import TypeInfoEnvironment
 from uvm_dataclasses.impl.type_info_object import TypeInfoObject
 from uvm_dataclasses.impl.type_info_util import TypeInfoUtil, UtilKind
@@ -37,6 +39,7 @@ class DecoratorEnvironmentImpl(DecoratorComponentImpl):
         return super().pre_init_annotated_fields()
 
     def init_annotated_field(self, key, type, has_init):
+        print("--> Environment.init_annotated_field")
         if not has_init:
             type_ti = TypeInfo.get(type, False)
             uc_kind = TypeInfoUtil.getUtilKind(type_ti)
@@ -49,15 +52,18 @@ class DecoratorEnvironmentImpl(DecoratorComponentImpl):
                 self.set_field_initial(key, None)
                 if uc_kind == UtilKind.Env:
                     env_ti._subenvs.append((key, type_uc_ti))
-                    env_ti._uvm_component_fields.append((key, type_uc_ti.T))
+                    env_ti._udc_component_fields.append((key, type_uc_ti))
                 elif uc_kind == UtilKind.Agent:
                     env_ti._agents.append((key, type_uc_ti))
-                    env_ti._uvm_component_fields.append((key, type_uc_ti.T))
+                    env_ti._udc_component_fields.append((key, type_uc_ti))
                 pass
             else:
+                print("<-- Environment.init_annotated_field")
                 return super().init_annotated_field(key, type, has_init)
         else:
+            print("<-- Environment.init_annotated_field")
             return super().init_annotated_field(key, type, has_init)
+        print("<-- Environment.init_annotated_field")
             
     def post_init_annotated_fields(self):
         env_ti = TypeInfoEnvironment.get(self.get_typeinfo())
@@ -72,6 +78,8 @@ class DecoratorEnvironmentImpl(DecoratorComponentImpl):
             raise Exception("Multiple @config classes declared in environment %s" % self.T.__name__)
 
         env_ti._config_t = config_t[0]
+        print("Environment: %s ; config: %s" % (
+            str(env_ti), str(env_ti._config_t)))
 
         # Add type hints for the config objects        
         for name,senv_ti in env_ti._subenvs:
@@ -84,8 +92,12 @@ class DecoratorEnvironmentImpl(DecoratorComponentImpl):
         # TODO: Retrieve the config class
         # TODO: Add entries for each sub-field
         # TODO: Run the object decorator on the field
+        print("--> Decorate Config for %s" % str(env_ti.T))
+        config_ti = TypeInfoConfig.get(TypeInfo.get(env_ti._config_t))
+        print("config_ti=%s" % str(config_ti))
         config_tp = DecoratorObjectImpl([],{})(env_ti._config_t)
-        print("config_tp: %s" % str(config_tp))
+        setattr(config_tp, "_initialize", MethodImplConfig.initialize)
+        print("<-- Decorate Config for %s" % str(env_ti.T))
         env_ti._config_t = config_tp
             
         return super().post_init_annotated_fields()

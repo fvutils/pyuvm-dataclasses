@@ -24,7 +24,7 @@ class TestEnvSmoke(UdcTestsBase):
                 print("pre_build_phase")
                 
             def __post_build_phase__(self):
-                print("post_build_phase")
+                print("post_build_phase: configuration=%s" % str(self.configuration))
                     
             def connect_phase(self):
                 self.my_impl.write(None)
@@ -34,13 +34,21 @@ class TestEnvSmoke(UdcTestsBase):
             e1 : my_env
             e2 : my_env
             
-            def __post_build_phase__(self):
+            def post_build_phase(self):
                 print("my_super_env.post_init e1=%s" % (str(self.e1),))
+                self.configuration.d = 10
 
             @udc.config
             class config(uvm_object):
                 c : int = 2
                 d : int = 3
+                
+                def initialize(self):
+                    """
+                    User hook to propagate configuration down
+                    """
+                    self.e1_config.a = self.d+1
+                    self.e2_config.a = self.d+2
                 
         # Total config looks like this:
         #
@@ -73,12 +81,14 @@ class TestEnvSmoke(UdcTestsBase):
             # - Creates top-level environment
             # - Calls 'set_config' on top-level environment
             # - Invokes user hook to perform top-level config propagation (eg knob -> top-env)
+            #   - This should happen in post_build_phase
             # - Invokes config.initialize() to push perform config propagation
             # - Bench build_phase complete
             # -> UVM invokes sub-environment builds
             #    - top-env build_phase has its configuration 
             #    - constructs sub-envs
             #    - calls sub-env set_config with appropriate config sub-handle
+            #      - in our case, directly set configuration attribute
             # <- UVM completes sub-environment builds
             # 
             

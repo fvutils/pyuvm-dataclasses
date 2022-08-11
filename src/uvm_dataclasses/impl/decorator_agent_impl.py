@@ -15,7 +15,8 @@ class DecoratorAgentImpl(object):
         self._validate_ports(T)
         self._validate_transaction(T)
         self._validate_vlnv(T)
-        pass
+        
+        return T
 
     def _validate_ports(self, T):
         import uvm_dataclasses as udc

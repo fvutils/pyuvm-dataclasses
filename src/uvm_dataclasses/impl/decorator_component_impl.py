@@ -2,8 +2,10 @@
 import dataclasses
 import pyuvm
 from pyuvm import uvm_component
+import typeworks
 
 from uvm_dataclasses.impl.type_info_component import TypeInfoComponent
+from uvm_dataclasses.impl.type_info_object import TypeInfoObject
 from .decorator_object_impl import DecoratorObjectImpl
 from .method_impl_component import MethodImplComponent
 from .analysis_port_t import AnalysisPortKind, AnalysisPortT
@@ -32,7 +34,11 @@ class DecoratorComponentImpl(DecoratorObjectImpl):
             print("type=%s" % str(type))
             if issubclass(type, uvm_component):
                 comp_ti = TypeInfoComponent.get(self.get_typeinfo())
-                comp_ti._uvm_component_fields.append((key, type))
+                if TypeInfoObject.isUdcType(typeworks.TypeInfo.get(type, False)):
+                    comp_ti._udc_component_fields.append((key, 
+                            TypeInfoObject.get(typeworks.TypeInfo.get(type))))
+                else:
+                    comp_ti._uvm_component_fields.append((key, type))
                 self.set_field_initial(key, None)
             elif issubclass(type, AnalysisPortT):
                 comp_ti = TypeInfoComponent.get(self.get_typeinfo())
@@ -76,7 +82,7 @@ class DecoratorComponentImpl(DecoratorObjectImpl):
         Searches base classes for an __init__ matching the signature
         required for class uvm_component
         """
-        if hasattr(c, "__init__") and c.__init__.__code__.co_argcount == 3:
+        if hasattr(c, "__init__") and hasattr(c.__init__, "__code__") and c.__init__.__code__.co_argcount == 3:
             print(" -- match")
             return c.__init__
         else:

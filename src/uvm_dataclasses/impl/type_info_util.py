@@ -6,11 +6,13 @@ from .type_info_component import TypeInfoComponent
 class UtilKind(Enum):
     Agent = auto()
     Bench = auto()
+    Config = auto()
     Env = auto()
 
 class TypeInfoUtil(TypeInfoComponent):
     
     def __init__(self, info, kind):
+        print("TypeInfoUtil()")
         super().__init__(info)
         self.kind = kind
         self._config_t = None
