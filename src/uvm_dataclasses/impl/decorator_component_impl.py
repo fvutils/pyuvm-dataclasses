@@ -6,6 +6,7 @@ import typeworks
 
 from uvm_dataclasses.impl.type_info_component import TypeInfoComponent
 from uvm_dataclasses.impl.type_info_object import TypeInfoObject
+from ..type_kind import TypeKind
 from .decorator_object_impl import DecoratorObjectImpl
 from .method_impl_component import MethodImplComponent
 from .analysis_port_t import AnalysisPortKind, AnalysisPortT
@@ -18,6 +19,9 @@ class DecoratorComponentImpl(DecoratorObjectImpl):
         
     def __init__(self, args, kwargs):
         super().__init__(args, kwargs)
+        
+    def get_type_category(self):
+        return TypeKind.Component
         
     def pre_decorate(self, T):
 #        if hasattr(T, "__init__") and T.__init__.__code__.co_argcount == 3:

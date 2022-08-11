@@ -101,6 +101,10 @@ class TestAgentSmoke(TestCase):
     
     def test_smoke(self):
 
+        @udc.transaction
+        class transaction_t(uvm.uvm_object):
+            pass
+        
         @udc.agent
         class my_agent(uvm.uvm_component):
             
@@ -109,10 +113,13 @@ class TestAgentSmoke(TestCase):
                 a : int = 1
                 b : int = 2
                 c : int = 3
+                
+            ports = (
+                udc.input("clock"),
+                udc.input("reset")
+            )
 
-            @udc.transaction
-            class transaction(uvm.uvm_object):
-                pass
+            transaction = transaction_t
             pass
         
         @udc.environment

@@ -4,8 +4,12 @@ from pyuvm import uvm_component, uvm_object
 from uvm_dataclasses.impl.method_impl_object import MethodImplObject
 
 from uvm_dataclasses.impl.type_info_object import TypeInfoObject
+from ..type_kind import TypeKind
 
 class DecoratorObjectImpl(typeworks.ClsDecoratorBase):
+    
+    def get_type_category(self):
+        return TypeKind.Object
     
     def init_annotated_field(self, key, type, has_init):
         print("DecoratorObjectImpl.init_annotated_field: %s %s" % (key, str(type)))

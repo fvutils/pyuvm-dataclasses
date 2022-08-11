@@ -8,9 +8,13 @@ import typeworks
 from uvm_dataclasses.impl.type_info_bench import TypeInfoBench
 from uvm_dataclasses.impl.type_info_environment import TypeInfoEnvironment
 from uvm_dataclasses.impl.type_info_util import TypeInfoUtil, UtilKind
+from ..type_kind import TypeKind
 from .decorator_component_impl import DecoratorComponentImpl
 
 class DecoratorBenchImpl(DecoratorComponentImpl):
+    
+    def get_type_category(self):
+        return TypeKind.Bench
     
     def pre_decorate(self, T):
         TypeInfoBench.get(self.get_typeinfo())

@@ -39,9 +39,9 @@ def transaction(*args, **kwargs):
 
 def agent(*args, **kwargs):
     if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
-        return DecoratorAgentImpl({})(args[0])
+        return DecoratorAgentImpl([], {})(args[0])
     else:
-        return DecoratorAgentImpl(kwargs)
+        return DecoratorAgentImpl(args, kwargs)
     
 def bench(*args, **kwargs):
     from uvm_dataclasses.impl.decorator_bench_impl import DecoratorBenchImpl

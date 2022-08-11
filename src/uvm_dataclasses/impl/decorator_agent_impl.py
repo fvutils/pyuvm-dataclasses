@@ -5,24 +5,26 @@ Created on Jul 4, 2022
 '''
 
 
-class DecoratorAgentImpl(object):
-    
-    def __init__(self, kwargs):
-        pass
-    
-    def __call__(self, T):
+from ..type_kind import TypeKind
+from .decorator_component_impl import DecoratorComponentImpl
 
+
+class DecoratorAgentImpl(DecoratorComponentImpl):
+    
+    def get_type_category(self):
+        return TypeKind.Agent
+    
+    def pre_decorate(self, T):
         self._validate_ports(T)
         self._validate_transaction(T)
         self._validate_vlnv(T)
         
-        return T
+        super().pre_decorate(T)
 
     def _validate_ports(self, T):
         import uvm_dataclasses as udc
         if not hasattr(T, "ports"):
-            raise Exception("Agent class %s doesn't define 'ports'" % (
-                type(T).__qualname__,))
+            raise Exception("Agent class %s doesn't define 'ports'" % T.__qualname__)
         ports = getattr(T, "ports")
 
         if isinstance(ports, udc.types.ports):
@@ -35,11 +37,11 @@ class DecoratorAgentImpl(object):
         pass
 
     def _validate_transaction(self, T):
-        if not hasattr(T, "transaction_t"):
+        if not hasattr(T, "transaction"):
             raise Exception("Agent class %s does not declare a 'transaction' class" % (
-                type(T).__qualname__,))
+                T.__qualname__,))
 
     def _validate_vlnv(self, T):
         if not hasattr(T, "vlnv"):
             raise Exception("Agent class %s does not declare a 'vlnv' field" % (
-                type(T).__qualname__,))
+                T.__qualname__,))

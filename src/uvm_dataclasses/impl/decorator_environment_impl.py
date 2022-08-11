@@ -18,12 +18,16 @@ from uvm_dataclasses.impl.type_info_config import TypeInfoConfig
 from uvm_dataclasses.impl.type_info_environment import TypeInfoEnvironment
 from uvm_dataclasses.impl.type_info_object import TypeInfoObject
 from uvm_dataclasses.impl.type_info_util import TypeInfoUtil, UtilKind
+from ..type_kind import TypeKind
 
 from .decorator_component_impl import DecoratorComponentImpl
 from .decorator_config_impl import DecoratorConfigImpl
 
 
 class DecoratorEnvironmentImpl(DecoratorComponentImpl):
+    
+    def get_type_category(self):
+        return TypeKind.Environment
     
     def pre_decorate(self, T):
 #        if not hasattr(T, "config_t"):
