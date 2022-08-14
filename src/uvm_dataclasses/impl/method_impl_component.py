@@ -5,7 +5,7 @@ from uvm_dataclasses.impl.type_info_component import TypeInfoComponent
 class MethodImplComponent(object):
 
     @staticmethod    
-    def init(self, name, parent):
+    def init(self, name=None, parent=None):
         """Implements dataclass initialization for uvm_component
 
         Args:

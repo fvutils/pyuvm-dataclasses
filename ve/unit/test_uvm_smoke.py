@@ -1,6 +1,7 @@
 
 import cocotb_stub_sim
 import uvm_dataclasses as udc
+import vsc
 from pyuvm import *
 from udc_tests_base import UdcTestsBase
 
@@ -39,12 +40,50 @@ class TestUvmSmoke(UdcTestsBase):
             await uvm_root().run_test("my_test")
         cocotb_stub_sim.run(entry)
         
+    def test_obj_1(self):
+        @udc.object
+        class transaction(uvm_transaction):
+            a : vsc.rand_int32_t = 0
+            b : vsc.rand_int32_t = 0
+            
+        t = transaction()
+        
+    def test_comp_1(self):
+        
+        @udc.object
+        class transaction(uvm_transaction):
+            a : vsc.rand_int32_t = 0
+            b : vsc.rand_int32_t = 0
+            
+        @udc.component
+        class producer(uvm_component):
+            ap : udc.analysis_port[transaction]
+            
+            async def run_phase(self):
+                self.raise_objection()
+                t = transaction()
+                
+                for i in range(10):
+                    t.randomize()
+                    t.a = i
+                    self.ap.write(t)
+                    await cocotb.triggers.Timer(1, 'ns')
+                self.drop_objection()
+        
+        p = producer("p", None)
+        
+        
     def test_tlm_1(self): # 36
         
         @udc.object
         class transaction(uvm_transaction):
-            a : int = 0
-            b : int = 0
+            a : vsc.rand_int32_t = 0
+            b : vsc.rand_int32_t = 0
+            
+            @vsc.constraint
+            def ab_c(self):
+                self.b > 0
+                self.b <= 16
         
         @udc.component
         class producer_c(uvm_component):
@@ -55,6 +94,7 @@ class TestUvmSmoke(UdcTestsBase):
                 t = transaction()
                 
                 for i in range(10):
+                    t.randomize()
                     t.a = i
                     self.ap.write(t)
                     await cocotb.triggers.Timer(1, 'ns')
@@ -67,7 +107,7 @@ class TestUvmSmoke(UdcTestsBase):
             
             def write_impl(self, t):
                 nonlocal count
-                print("Transaction: %d" % t.a)
+                print("Transaction: %d (%d)" % (t.a, t.b))
                 count += 1
                 
         @udc.component

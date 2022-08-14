@@ -1,19 +1,21 @@
 
+import vsc
 from typing import List, Tuple
 from typeworks.impl.typeinfo import TypeInfo
 
 
-class TypeInfoObject(object):
+class TypeInfoObject(vsc.impl.typeinfo_randclass.TypeInfoRandClass):
     
-    ATTR_NAME = "_udc_info"
+    ATTR_NAME = vsc.impl.typeinfo_randclass.TypeInfoRandClass.ATTR_NAME
     
     def __init__(self, ti):
+        super().__init__(ti)
         self._ti = ti
         self._uvm_object_fields : List[Tuple[str,type]] = []
         self._udc_object_fields : List[Tuple[str,TypeInfoObject]] = []
         
     def init(self, obj):
-        self._ti.init(obj, [], {})
+        super().init(obj, [], {})
 
         # Create UDC object fields
         for name,obj_ti in self._udc_object_fields:
@@ -35,9 +37,9 @@ class TypeInfoObject(object):
         
     @staticmethod
     def get(info, create=True):
-        if not hasattr(info, "_udc_info"):
+        if not hasattr(info, TypeInfoObject.ATTR_NAME):
             if create:
-                setattr(info, "_udc_info", TypeInfoObject(info))
+                setattr(info, TypeInfoObject.ATTR_NAME, TypeInfoObject(info))
             else:
                 return None
-        return info._udc_info
+        return getattr(info, TypeInfoObject.ATTR_NAME)

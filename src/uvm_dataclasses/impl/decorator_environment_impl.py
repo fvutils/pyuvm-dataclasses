@@ -42,7 +42,7 @@ class DecoratorEnvironmentImpl(DecoratorComponentImpl):
         
         return super().pre_init_annotated_fields()
 
-    def init_annotated_field(self, key, type, has_init):
+    def init_annotated_field(self, key, type, has_init, init):
         print("--> Environment.init_annotated_field")
         if not has_init:
             type_ti = TypeInfo.get(type, False)
@@ -63,10 +63,10 @@ class DecoratorEnvironmentImpl(DecoratorComponentImpl):
                 pass
             else:
                 print("<-- Environment.init_annotated_field")
-                return super().init_annotated_field(key, type, has_init)
+                return super().init_annotated_field(key, type, has_init, init)
         else:
             print("<-- Environment.init_annotated_field")
-            return super().init_annotated_field(key, type, has_init)
+            return super().init_annotated_field(key, type, has_init, init)
         print("<-- Environment.init_annotated_field")
             
     def post_init_annotated_fields(self):

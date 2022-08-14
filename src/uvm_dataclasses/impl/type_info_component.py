@@ -21,8 +21,11 @@ class TypeInfoComponent(TypeInfoObject):
         # Initialize the component class first
         print("--> _uvm_comp_init")
 
-        # Initialize uvm-component fields        
-        self._uvm_comp_init(obj, name, parent)
+        # Initialize uvm-component fields
+        if name is not None:
+            # Note: name is none when the class is constructed 
+            # during type-info extraction
+            self._uvm_comp_init(obj, name, parent)
 
         print("<-- _uvm_comp_init")
         print("--> super.init()", flush=True)
@@ -69,6 +72,6 @@ class TypeInfoComponent(TypeInfoObject):
     
     @staticmethod
     def get(info):
-        if not hasattr(info, "_udc_info"):
-            setattr(info, "_udc_info", TypeInfoComponent(info))
-        return info._udc_info
+        if not hasattr(info, TypeInfoObject.ATTR_NAME):
+            setattr(info, TypeInfoObject.ATTR_NAME, TypeInfoComponent(info))
+        return getattr(info, TypeInfoObject.ATTR_NAME)

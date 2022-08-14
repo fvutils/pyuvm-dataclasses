@@ -24,16 +24,16 @@ class DecoratorComponentImpl(DecoratorObjectImpl):
         return TypeKind.Component
         
     def pre_decorate(self, T):
-#        if hasattr(T, "__init__") and T.__init__.__code__.co_argcount == 3:
-#            raise Exception("Class declares __init__")
-        
         comp_ti = TypeInfoComponent.get(self.get_typeinfo())
+        print("Component.pre_decorate comp_ti=%s" % str(comp_ti))
         
         # Work back through the type hierarchy to find the
         # last __init__ method with three parameters
         comp_ti._uvm_comp_init = self._find_uvm_component_init(T)
+        
+        super().pre_decorate(T)
     
-    def init_annotated_field(self, key, type, has_init):
+    def init_annotated_field(self, key, type, has_init, init):
         if not has_init:
             print("type=%s" % str(type))
             if issubclass(type, uvm_component):
@@ -56,9 +56,9 @@ class DecoratorComponentImpl(DecoratorObjectImpl):
                     raise Exception("Unknown analysis-port kind %s" % type.Kind)
                 self.set_field_initial(key, None)
             else:
-                super().init_annotated_field(key, type, has_init)
+                super().init_annotated_field(key, type, has_init, init)
         else:
-            super().init_annotated_field(key, type, has_init)
+            super().init_annotated_field(key, type, has_init, init)
             
     def post_init_annotated_fields(self):
         comp_ti = TypeInfoComponent.get(self.get_typeinfo())
