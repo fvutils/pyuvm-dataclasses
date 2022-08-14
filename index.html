@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Welcome to PyUVM Dataclasses’s documentation! &#8212; PyUVM Dataclasses  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="welcome-to-pyuvm-dataclasses-s-documentation">
+<h1>Welcome to PyUVM Dataclasses’s documentation!<a class="headerlink" href="#welcome-to-pyuvm-dataclasses-s-documentation" title="Permalink to this heading">¶</a></h1>
+<p>PyUVM Dataclasses is a Python package that allows you to capture UVM
+testbenches structures with the same efficiency that Python’s
+<cite>dataclasses</cite> package brings to regular data clases.</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@udc</span><span class="o">.</span><span class="n">object</span>
+<span class="k">class</span> <span class="nc">transaction</span><span class="p">(</span><span class="n">uvm_transaction</span><span class="p">):</span>
+    <span class="n">a</span> <span class="p">:</span> <span class="n">vsc</span><span class="o">.</span><span class="n">rand_int32_t</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">b</span> <span class="p">:</span> <span class="n">vsc</span><span class="o">.</span><span class="n">rand_int32_t</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@vsc</span><span class="o">.</span><span class="n">constraint</span>
+    <span class="k">def</span> <span class="nf">ab_c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="mi">16</span>
+
+<span class="nd">@udc</span><span class="o">.</span><span class="n">component</span>
+<span class="k">class</span> <span class="nc">producer_c</span><span class="p">(</span><span class="n">uvm_component</span><span class="p">):</span>
+    <span class="n">ap</span> <span class="p">:</span> <span class="n">udc</span><span class="o">.</span><span class="n">analysis_port</span><span class="p">[</span><span class="n">transaction</span><span class="p">]</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">run_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_objection</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">transaction</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">randomize</span><span class="p">()</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">cocotb</span><span class="o">.</span><span class="n">triggers</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;ns&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop_objection</span><span class="p">()</span>
+
+<span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nd">@udc</span><span class="o">.</span><span class="n">component</span>
+<span class="k">class</span> <span class="nc">consumer_c</span><span class="p">(</span><span class="n">uvm_component</span><span class="p">):</span>
+    <span class="n">impl</span> <span class="p">:</span> <span class="n">udc</span><span class="o">.</span><span class="n">analysis_imp</span><span class="p">[</span><span class="n">transaction</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">write_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="k">nonlocal</span> <span class="n">count</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transaction: </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%d</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">b</span><span class="p">))</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="nd">@udc</span><span class="o">.</span><span class="n">component</span>
+<span class="k">class</span> <span class="nc">test_c</span><span class="p">(</span><span class="n">uvm_test</span><span class="p">):</span>
+    <span class="n">producer</span> <span class="p">:</span> <span class="n">producer_c</span>
+    <span class="n">consumer</span> <span class="p">:</span> <span class="n">consumer_c</span>
+
+    <span class="k">def</span> <span class="nf">connect_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">impl</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the example above, note the following:
+- PyUVM components and objects are marked with decorators
+- No <cite>build_phase</cite> methods are required in order to construct elements
+- Declaring an analysis_imp automatically calls a local method named <cite>write_&lt;imp&gt;</cite>.</p>
+<blockquote>
+<div><p>If the user doesn’t declare this method, a placeholder is created instead</p>
+</div></blockquote>
+<p>The PyUVM Dataclasses version of this simple producer/consumer example requires
+22% less code than the full PyUVM version.</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">PyUVM Dataclasses</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Matthew Ballance.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
