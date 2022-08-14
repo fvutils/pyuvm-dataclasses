@@ -1,0 +1,44 @@
+name: CI
+on:
+  - push
+  - pull_request
+  - workflow_dispatch
+
+jobs:
+  ci-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Configure Python
+      run: |
+        python3 -m pip install ivpm
+        python3 -m ivpm update -a
+        ./packages/python/bin/python3 -m pip install pip setuptools --upgrade
+#        export BUILD_NUM=$GITHUB_RUN_ID
+#        echo "BUILD_NUM=${BUILD_NUM}"
+#        ./packages/python/bin/python3 setup.py bdist_wheel --universal
+#    - name: Run Tests
+#      run: |
+#        cd ve/unit
+#        /bin/bash runtest.sh
+    - name: Build Docs
+      run: |
+        make html
+        touch doc/build/html/.nojekyll
+        cp -r doc/build/html .
+    - name: Publish Docs
+      if: startsWith(github.ref, 'refs/heads/main')
+      uses: JamesIves/github-pages-deploy-action@4.1.7
+      with:
+        branch: gh-pages
+        folder: html
+#    - name: Publish to PyPi
+#      if: startsWith(github.ref, 'refs/heads/main')
+#      uses: pypa/gh-action-pypi-publish@release/v1
+#      with:
+#        user: __token__
+#        password: ${{ secrets.PYPI_API_TOKEN }}
+
