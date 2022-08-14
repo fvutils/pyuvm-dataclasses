@@ -35,7 +35,7 @@
   <section id="welcome-to-pyuvm-dataclasses-s-documentation">
 <h1>Welcome to PyUVM Dataclasses’s documentation!<a class="headerlink" href="#welcome-to-pyuvm-dataclasses-s-documentation" title="Permalink to this heading">¶</a></h1>
 <p>PyUVM Dataclasses is a Python package that allows you to capture UVM
-testbenches structures with the same efficiency that Python’s
+testbench structures with the same efficiency that Python’s
 <cite>dataclasses</cite> package brings to regular data clases.</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@udc</span><span class="o">.</span><span class="n">object</span>
 <span class="k">class</span> <span class="nc">transaction</span><span class="p">(</span><span class="n">uvm_transaction</span><span class="p">):</span>
@@ -81,13 +81,13 @@ testbenches structures with the same efficiency that Python’s
         <span class="bp">self</span><span class="o">.</span><span class="n">producer</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">consumer</span><span class="o">.</span><span class="n">impl</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In the example above, note the following:
-- PyUVM components and objects are marked with decorators
-- No <cite>build_phase</cite> methods are required in order to construct elements
-- Declaring an analysis_imp automatically calls a local method named <cite>write_&lt;imp&gt;</cite>.</p>
-<blockquote>
-<div><p>If the user doesn’t declare this method, a placeholder is created instead</p>
-</div></blockquote>
+<p>In the example above, note the following:</p>
+<ul class="simple">
+<li><p>PyUVM components and objects are marked with decorators.</p></li>
+<li><p>No <cite>build_phase</cite> methods are required in order to construct elements.</p></li>
+<li><p>Declaring an analysis_imp automatically calls a local method named <cite>write_&lt;imp&gt;</cite>.
+If the user doesn’t declare this method, a placeholder is created instead</p></li>
+</ul>
 <p>The PyUVM Dataclasses version of this simple producer/consumer example requires
 22% less code than the full PyUVM version.</p>
 <div class="toctree-wrapper compound">
