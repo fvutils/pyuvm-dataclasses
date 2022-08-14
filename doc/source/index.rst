@@ -7,7 +7,7 @@ Welcome to PyUVM Dataclasses's documentation!
 =============================================
 
 PyUVM Dataclasses is a Python package that allows you to capture UVM 
-testbenches structures with the same efficiency that Python's 
+testbench structures with the same efficiency that Python's 
 `dataclasses` package brings to regular data clases.
 
 .. code:: python3
@@ -57,10 +57,13 @@ testbenches structures with the same efficiency that Python's
 
 
 In the example above, note the following:
-- PyUVM components and objects are marked with decorators
-- No `build_phase` methods are required in order to construct elements
+
+- PyUVM components and objects are marked with decorators.
+- No `build_phase` methods are required in order to construct elements.
+
 - Declaring an analysis_imp automatically calls a local method named `write_<imp>`. 
   If the user doesn't declare this method, a placeholder is created instead
+
 
 The PyUVM Dataclasses version of this simple producer/consumer example requires
 22% less code than the full PyUVM version.
