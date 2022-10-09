@@ -1,12 +1,26 @@
-
-import vsc
+#****************************************************************************
+# Copyright 2022 Matthew Ballance and contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#****************************************************************************
+import vsc_dataclasses as vdc
 from typing import List, Tuple
 from typeworks.impl.typeinfo import TypeInfo
 
 
-class TypeInfoObject(vsc.impl.typeinfo_randclass.TypeInfoRandClass):
+class TypeInfoObject(vdc.impl.TypeInfoRandClass):
     
-    ATTR_NAME = vsc.impl.typeinfo_randclass.TypeInfoRandClass.ATTR_NAME
+    ATTR_NAME = vdc.impl.TypeInfoRandClass.ATTR_NAME
     
     def __init__(self, ti):
         super().__init__(ti)

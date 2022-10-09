@@ -1,13 +1,13 @@
 
 import typeworks
-import vsc
 from pyuvm import uvm_component, uvm_object
+import vsc_dataclasses as vdc
 from uvm_dataclasses.impl.method_impl_object import MethodImplObject
 
 from uvm_dataclasses.impl.type_info_object import TypeInfoObject
 from ..type_kind import TypeKind
 
-class DecoratorObjectImpl(vsc.RandClassDecoratorImpl):
+class DecoratorObjectImpl(vdc.RandClassDecoratorImpl):
     
     def get_type_category(self):
         return TypeKind.Object
